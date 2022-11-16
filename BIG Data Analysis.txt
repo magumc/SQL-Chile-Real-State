@@ -1,0 +1,163 @@
+-- Pregunta 1
+
+Select cod_com, cod_mz , cod_pr, periodo , avaluo_fiscal
+from fija
+where cod_destino = 'H'
+and periodo = '1-2021'
+order by avaluo_fiscal DESC
+limit 10
+
+-- Pregunta 2
+
+Select f.periodo, ccr.comuna, sum(f.contrib_sem) contribucion
+from codigo_comuna_region ccr, fija f
+where f.periodo = '1-2021'
+and f.cod_com = ccr.cod_com
+group by ccr.comuna, f.periodo
+order by sum(f.contrib_sem) Desc
+limit 5
+
+-- Pregunta 3
+
+SELECT f.cod_destino,  cd.descripcion_destino, f.periodo,  SUM(sc.construcciones_generales) construcciones, SUM(sc.galpones) galpones, Sum(sc.complementarias) Complementarias, Sum(sc.obras_civiles) obra_civil
+FROM fija f, codigo_destino cd, superficie_construida sc
+   
+  WHERE cd.cod_destino = f.cod_destino
+   and f.cod_com = sc.cod_com
+   and f.cod_mz = sc.cod_mz
+   and f.cod_pr = sc.cod_pr
+   and f.periodo = sc.periodo
+   and f.periodo = '1-2021'
+   
+Group by f.cod_destino, cd.descripcion_destino, f.periodo
+order by cod_destino
+
+	-- Usando With
+
+WITH destino AS (
+  SELECT f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.cod_destino, cd.codigo_destino
+   FROM fija f, codigo_destino cd
+   WHERE cd.cod_destino = f.cod_destino
+)
+
+SELECT D.cod_destino, D.descripcion_destino, D.periodo, SUM(sc.construcciones_generales) Construcciones , SUM(sc.galpones) galpones, Sum(sc.complementarias) Complementarias, Sum(sc.obras_civiles) obra_civil 
+FROM superficie_construida sc, destino D
+
+where D.cod_com = sc.cod_com
+and D.cod_mz = sc.cod_mz
+and D.cod_pr = sc.cod_pr
+and D.periodo = sc.periodo
+and D.periodo = '1-2021'
+
+Group by D.cod_destino, D.descripcion_destino, D.periodo
+order by cod_destino
+
+
+-- Pregunta 4
+
+Select ccr.cod_region, Count(*) Cantidad_Propiedades
+From codigo_comuna_region ccr, nexo_bc nbc
+where ccr.cod_com = nbc.cod_com
+and nbc.periodo = '1-2021'
+group by ccr.cod_region, nbc.periodo
+order by ccr.cod_region
+
+-- Pregunta 5
+
+WITH destino AS (
+  SELECT f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.cod_destino, cd.tipo, ccr.cod_region
+   FROM fija f, codigo_destino cd, codigo_comuna_region ccr
+   WHERE cd.cod_destino = f.cod_destino
+   and ccr.cod_com = f.cod_com
+)
+
+Select d.cod_region, d.tipo, d.periodo, SUM(sc.construcciones_generales) Construciones_generales, SUM(ss.sup_terreno) Superficie_terreno
+FROM destino d, superficie_suelo ss, superficie_construida sc
+
+WHERE d.cod_com = ss.cod_com
+and   d.cod_mz = ss.cod_mz
+and   d.cod_pr = ss.cod_pr
+and   d.periodo = ss.periodo
+and   ss.cod_com = sc.cod_com
+and   ss.cod_mz = sc.cod_mz
+and   ss.cod_pr = sc.cod_pr
+and   ss.periodo = sc.periodo
+and   sc.periodo = '1-2021'
+
+Group by d.cod_region, d.tipo, d.periodo
+Order by d.cod_region
+
+-- Pregunta 6
+
+SELECT f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.cod_destino, Count(c.numero_linea) Cantidad_Lineas, Avg(c.cod_calidad) Promedio_Calidad
+ FROM fija f, const c
+ 
+   WHERE f.cod_com = c.cod_com   
+   and f.cod_mz = c.cod_mz
+   and f.cod_pr = c.cod_pr
+   and f.periodo = c.periodo
+   and f.periodo = '1-2021'
+   
+ Group by f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.cod_destino
+ 
+ Having f.cod_destino = 'H'
+ 
+ -- Pregunta 7
+ 
+ With Rol11 AS (
+   Select ccr.comuna , Count(*) Roles_2011
+   From codigo_comuna_region ccr, fija f
+   where ccr.cod_com = f.cod_com
+   and f.periodo = '1-2011'
+   group by ccr.comuna
+   )
+ ,   Rol21 AS (
+   Select ccr.comuna, Count(*) Roles_2021
+   From codigo_comuna_region ccr, fija f
+   where ccr.cod_com = f.cod_com
+   and f.periodo = '1-2021'
+   group by ccr.comuna
+   )
+   
+Select R11.comuna, R11.Roles_2011, R21.Roles_2021, ROUND((R21.Roles_2021 - R11.Roles_2011)*100.0/R11.Roles_2011, 2) Variacion_Porcentual
+From Rol11 R11, Rol21 R21
+Where R11.comuna = R21.comuna
+
+Order by Variacion_Porcentual Desc
+limit 10
+
+ 
+ -- Pregunta 9
+ 
+With comuna_destino AS (   
+   SELECT f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.avaluo_fiscal, cd.descripcion_destino, ccr.comuna
+   FROM fija f, codigo_destino cd, codigo_comuna_region ccr
+   WHERE cd.cod_destino = f.cod_destino
+   and ccr.cod_com = f.cod_com
+)  
+   
+ SELECT co.cod_com, co.cod_mz, co.cod_pr, c.numero_linea, c.year_linea year_linea, co.periodo, co.comuna, 
+        sc.construcciones_generales m2_construidos, co.avaluo_fiscal, co.descripcion_destino Uso
+        
+  FROM comuna_destino co, superficie_construida sc, const c
+  WHERE co.cod_com = c.cod_com
+        AND co.cod_mz = c.cod_mz
+        AND co.cod_pr = c.cod_pr
+        AND co.periodo = c.periodo
+        AND c.cod_com = sc.cod_com
+        AND c.cod_mz = sc.cod_mz
+        AND c.cod_pr = sc.cod_pr
+        AND c.periodo = sc.periodo
+        AND c.periodo = '1-2021'
+                
+ GROUP BY  co.cod_com, co.cod_mz, co.cod_pr, co.periodo, c.numero_linea, co.comuna, 
+          sc.construcciones_generales, c.year_linea, co.avaluo_fiscal, co.descripcion_destino
+
+ HAVING (co.comuna = 'VITACURA' or co.comuna = 'LO BARNECHEA' or co.comuna = 'LAS CONDES')
+        AND co.descripcion_destino = 'Habitacional'
+        AND sc.construcciones_generales >= 130
+        AND c.year_linea >= 2010
+        AND co.avaluo_fiscal BETWEEN 150000000 AND 250000000
+        AND c.numero_linea = 1
+                
+ ORDER BY co.avaluo_fiscal
