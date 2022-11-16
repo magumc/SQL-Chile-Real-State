@@ -1,4 +1,4 @@
--- Pregunta 1
+-- Las 10 viviendas mas caras (10 most expensive households)
 
 Select cod_com, cod_mz , cod_pr, periodo , avaluo_fiscal
 from fija
@@ -7,7 +7,7 @@ and periodo = '1-2021'
 order by avaluo_fiscal DESC
 limit 10
 
--- Pregunta 2
+-- 5 Sectores donde se recolecta la mayor cantidad de impuestos territoriales. 
 
 Select f.periodo, ccr.comuna, sum(f.contrib_sem) contribucion
 from codigo_comuna_region ccr, fija f
@@ -17,7 +17,7 @@ group by ccr.comuna, f.periodo
 order by sum(f.contrib_sem) Desc
 limit 5
 
--- Pregunta 3
+-- Cantidad de metros cuadrados de construcciones generales, galpones, complementarias y obras civiles para cada cod_destino para el periodo 1-2021. Se incluye tambien la descripcion del destino.
 
 SELECT f.cod_destino,  cd.descripcion_destino, f.periodo,  SUM(sc.construcciones_generales) construcciones, SUM(sc.galpones) galpones, Sum(sc.complementarias) Complementarias, Sum(sc.obras_civiles) obra_civil
 FROM fija f, codigo_destino cd, superficie_construida sc
@@ -32,7 +32,7 @@ FROM fija f, codigo_destino cd, superficie_construida sc
 Group by f.cod_destino, cd.descripcion_destino, f.periodo
 order by cod_destino
 
-	-- Usando With
+	-- Usando With (se crea la tabla destino)
 
 WITH destino AS (
   SELECT f.cod_com, f.cod_mz, f.cod_pr, f.periodo, f.cod_destino, cd.codigo_destino
@@ -53,7 +53,7 @@ Group by D.cod_destino, D.descripcion_destino, D.periodo
 order by cod_destino
 
 
--- Pregunta 4
+-- Un rol puede tener asociado un bien comun. La tabla nexo bc conecta un rol de propiedad y el de un bien comun. Para cada region, se muestra la cantidad total de propiedades que tienen asociado un bien comun para el periodo 1-2021.
 
 Select ccr.cod_region, Count(*) Cantidad_Propiedades
 From codigo_comuna_region ccr, nexo_bc nbc
