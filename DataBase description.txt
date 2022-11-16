@@ -1,0 +1,54 @@
+
+”fija” Table
+• cod com → PK, Int: codigo de comuna de la propiedad (SII)
+• cod mz → PK, Int: codigo de manzana de la propiedad (SII)
+• cod pr → PK, Int: codigo de predio de la propiedad (SII)
+• periodo → PK, String: periodo de registro (semestre-año)
+• avaluo fiscal → Int: avaluo fiscal de la propiedad
+• contrib sem → Int: contribuciones semestrales de la propiedad
+• cod destino → String: codigo del destino asociado a la propiedad
+
+”superficie construida” Table 
+• cod com → PK, Int: codigo de comuna de la propiedad (SII)
+• cod mz → PK, Int: codigo de manzana de la propiedad (SII)
+• cod pr → PK, Int: codigo de predio de la propiedad (SII)
+• periodo → PK, String: periodo de registro (semestre-año)
+• construcciones generales → Int: m2 construidos del tipo construcciones generales
+• galpones → Int: m2 construidos del tipo galpones
+• complementarias → Int: m2 construidos del tipo complementarias
+• obras civiles → Int: m2 construidos del tipo obras civiles
+
+”const” Table
+• cod com → PK, Int: codigo de comuna de la propiedad (SII)
+• cod mz → PK, Int: codigo de manzana de la propiedad (SII)
+• cod pr → PK, Int: codigo de predio de la propiedad (SII)
+• periodo → PK, String: periodo de registro (semestre-año)
+• numero linea → PK Int: id de la linea de construccion asociada al rol
+• cod calidad → Int: codigo de calidad de la linea, 0 es la peor calidad, 5 es la mejor.
+• year linea → Int: Año de construccion de la linea
+
+”superficie suelo” Table
+• cod com → PK, Int: codigo de comuna de la propiedad (SII)
+• cod mz → PK, Int: codigo de manzana de la propiedad (SII)
+• cod pr → PK, Int: codigo de predio de la propiedad (SII)
+• periodo → PK, String: periodo de registro (semestre-año)
+• sup terreno → Int: m2 del terreno de la propiedad
+
+”nexo bc” Table
+• cod com → PK, Int: codigo de comuna de la propiedad (SII)
+• cod mz → PK, Int: codigo de manzana de la propiedad (SII)
+• cod pr → PK, Int: codigo de predio de la propiedad (SII)
+• periodo → PK, String: periodo de registro (semestre-año)
+• cod com bc → Int: codigo de comuna de la propiedad (SII)
+• cod mz bc → Int: codigo de manzana de la propiedad (SII)
+• cod pr bc → Int: codigo de predio de la propiedad (SII)
+
+”codigo comuna region” Table ¸
+• cod com → PK, Int: codigo de comuna (SII)
+• comuna → String: nombre de la comuna
+• cod region → Int: codigo de la region asociado a la comuna
+
+”codigo destino” Table
+• cod destino → PK, String: codigo de destino
+• descripcion destino → String: descripcion del destino
+• tipo → String: Indica si el destino es agrıcola o no agrıcola
