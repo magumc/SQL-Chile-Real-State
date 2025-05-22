@@ -17,6 +17,8 @@ Usando lenguaje SQL se intentará responder las siguientes inquietudes:
  
 -- Propiedades habitacionales que se encuentre en las siguientes comunas: LO BARNECHEA, VITACURA, LAS CONDES, de al menos 130 m2 construidos, cosntruidos despues del 2010, avaluo fiscal dentro de 150MM y 200MM, Periodo 1-2021
 
+------------------------------------------------------------------------------------------------------------------------------------
+
 This brief demo will perform a property analysis based on an official database from the Chilean IRS (SII).
 Using SQL, we aim to answer the following questions:
 
